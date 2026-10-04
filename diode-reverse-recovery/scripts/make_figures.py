@@ -14,7 +14,8 @@ PLECS script.  Run from anywhere:
 
     python3 make_figures.py
 
-Figures are written as SVG next to the script, in ../figures/.
+Figures are written as SVG (for the Markdown documents) and PDF (for
+the LaTeX documents) next to the script, in ../figures/.
 """
 
 import os
@@ -47,7 +48,9 @@ PREVIEW = os.environ.get("PREVIEW_DIR")   # optional PNG copies for checking
 
 
 def save(fig, name):
+    """SVG for the Markdown documents, PDF for the LaTeX documents."""
     fig.savefig(os.path.join(OUT, name + ".svg"))
+    fig.savefig(os.path.join(OUT, name + ".pdf"))
     if PREVIEW:
         os.makedirs(PREVIEW, exist_ok=True)
         fig.savefig(os.path.join(PREVIEW, name + ".png"), dpi=110)
@@ -154,7 +157,7 @@ ax.set_ylim(-15, 70)
 ax.legend(loc="upper right")
 ax.set_title("The stored charge follows the current with a delay of one lifetime")
 fig.tight_layout()
-save(fig, "fig1_charge_lags_current")
+save(fig, "fig2_charge_lags_current")
 
 # ------------------------------------------- fig 2: the full recovery waveform
 fig, ax = plt.subplots(figsize=(7.5, 4.4))
@@ -195,7 +198,7 @@ ax.legend(loc="lower left")
 ax.set_title("Reverse recovery at the operating point of the note "
              "(0.107 A/µs, nominal Dynex set)")
 fig.tight_layout()
-save(fig, "fig2_recovery_waveform")
+save(fig, "fig3_recovery_waveform")
 
 # ------------------------------------------------- fig 3: where the charge goes
 fig, ax = plt.subplots(figsize=(7.5, 3.0))
@@ -224,7 +227,7 @@ ax.set_title("Only about half of the charge inside the diode comes out "
              "as reverse current")
 ax.grid(False)
 fig.tight_layout()
-save(fig, "fig3_charge_budget")
+save(fig, "fig4_charge_budget")
 
 # ------------------------------------- fig 4: the same diode at three slopes
 fig, ax = plt.subplots(figsize=(7.5, 4.2))
@@ -248,7 +251,7 @@ ax.legend(loc="upper right")
 ax.set_title("Same diode (same τ and $T_M$), three different slopes forced "
              "by the circuit")
 fig.tight_layout()
-save(fig, "fig4_effect_of_didt")
+save(fig, "fig7_effect_of_didt")
 
 # ----------------------------------------- fig 5: Qs versus di/dt (log-log)
 fig, ax = plt.subplots(figsize=(7.5, 4.4))
@@ -281,7 +284,7 @@ ax.legend(loc="lower right", fontsize=8.5)
 ax.set_title("Why $Q_{rr}$ at 0.107 A/µs is an extrapolation, "
              "and the two ways to do it")
 fig.tight_layout()
-save(fig, "fig5_qs_vs_didt")
+save(fig, "fig6_qs_vs_didt")
 
 # ------------------------------- fig 6: apparent lifetime versus di/dt
 fig, ax = plt.subplots(figsize=(7.5, 3.8))
@@ -303,7 +306,7 @@ ax.legend(loc="upper right", fontsize=8.5)
 ax.set_title("The lifetime you back out of the datasheet grows as the ramp "
              "gets slower")
 fig.tight_layout()
-save(fig, "fig6_apparent_lifetime")
+save(fig, "fig5_apparent_lifetime")
 
 # --------------------------------- fig 7: carrier profiles in the base (sketch)
 fig, ax = plt.subplots(figsize=(7.5, 3.8))
@@ -333,7 +336,7 @@ ax.set_title("Sketch: the plasma in the base empties during turn-off "
              "(illustrative shapes)")
 ax.grid(False)
 fig.tight_layout()
-save(fig, "fig7_plasma_profiles_sketch")
+save(fig, "fig1_plasma_profiles_sketch")
 
 # ---------------------------------- fig 8: nominal versus weak diode (u = 0.3)
 u = 0.3
