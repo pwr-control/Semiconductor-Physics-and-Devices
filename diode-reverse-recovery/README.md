@@ -15,11 +15,11 @@ Each Markdown document also exists as LaTeX and as a compiled PDF, for reading o
 | `plecs_diode_parameters_ds1112sg_simple_english.md` | [`plecs_diode_parameters_ds1112sg_simple_english.tex`](plecs_diode_parameters_ds1112sg_simple_english.tex) | [`plecs_diode_parameters_ds1112sg_simple_english.pdf`](plecs_diode_parameters_ds1112sg_simple_english.pdf) |
 | `physics_of_reverse_recovery.md` | [`physics_of_reverse_recovery.tex`](physics_of_reverse_recovery.tex) | [`physics_of_reverse_recovery.pdf`](physics_of_reverse_recovery.pdf) |
 
-The `.tex` files are generated from the Markdown by [`scripts/build_tex.py`](scripts/build_tex.py) (pandoc plus a fixed preamble) and compile on their own with `pdflatex` and a standard TeX Live. Edit the Markdown and rerun the script; or edit the `.tex` directly if the LaTeX version is to become the master copy.
+The `.tex` files are generated from the Markdown by [`scripts/build_tex.py`](scripts/build_tex.py) (pandoc, then the pwr-control LaTeX template of [`../AAA_template_latex_settings/`](../AAA_template_latex_settings/): title page with abstract and revision history, header with the logo, table of contents, lists of figures and tables, one-and-a-half line spacing). They compile with `pdflatex` and a full TeX Live, from inside this folder, because they load the template with a relative path. Edit the Markdown and rerun the script; or edit the `.tex` directly if the LaTeX version is to become the master copy. The title-page data (category, title, abstract, revision history) are in the `DOCS` table at the top of the script.
 
 Supporting material:
 
-- [`figures/`](figures/): the eight figures used by the physics document, as SVG (for the Markdown) and PDF (for the LaTeX).
+- [`figures/`](figures/): the eight figures used by the physics document, numbered in order of appearance, as SVG (for the Markdown) and PDF (for the LaTeX).
 - [`scripts/make_figures.py`](scripts/make_figures.py): regenerates the figures from the charge-control model with the parameters of the note (Python 3, NumPy, Matplotlib).
 - [`scripts/build_tex.py`](scripts/build_tex.py): regenerates the `.tex` files from the Markdown, and compiles them with `--pdf` (pandoc, pdflatex).
 

@@ -1,0 +1,126 @@
+% =============================================================
+%  pwr-control LaTeX template - FRONTESPIZIO
+%
+%  Da richiamare come prima istruzione dopo \begin{document}:
+%      \input{../../AAA_template_latex_settings/titlepage}
+%
+%  Il documento deve definire prima di \begin{document}:
+%      \DocCategory   categoria del documento
+%      \DocField      area tecnica
+%      \DocTitle      titolo (una o due righe)
+%      \DocSubtitle   sottotitolo
+%      \DocAuthor     autore/i, separati da virgola
+%      \DocRevision   numero di revisione corrente (es. 00)
+%      \DocDate       data della revisione corrente
+%      \DocAbstract   abstract
+%      \RevisionHistory  righe della tabella di revisione, nel formato
+%                        Rev. & Date & Description & Authors \\
+%      \MetaLabelA \MetaValueAUrl \MetaValueALabel
+%      \MetaLabelB \MetaValueB
+% =============================================================
+
+\providecommand{\DocCategory}{Technical Research Report}
+\providecommand{\DocField}{Power Electronics and Control Systems}
+\providecommand{\DocSubtitle}{}
+\providecommand{\DocRevision}{00}
+\providecommand{\DocAbstract}{}
+\providecommand{\RevisionHistory}{%
+	\DocRevision & \DocDate & First issue. & \DocAuthor \\
+}
+
+\titlepage
+
+% ---- Intestazione centrata ----
+\begin{center}
+	{\Large\scshape \DocCategory}\\[8pt]
+	{\large\scshape \DocField}
+\end{center}
+
+\vspace{30pt plus 4pt minus 14pt}
+\noindent\rule{\linewidth}{0.8pt}
+
+% ---- Titolo ----
+\begin{center}
+	\DocTitle
+\end{center}
+
+\vspace{4pt}
+\noindent\rule{\linewidth}{2.2pt}
+
+% ---- Sottotitolo ----
+\begin{center}
+	\begin{onehalfspace}
+		{\large\itshape \DocSubtitle}
+	\end{onehalfspace}
+\end{center}
+
+% ---- Authors / Revision / Date ----
+\vspace{30pt plus 4pt minus 14pt}
+
+\noindent
+\begin{minipage}[t]{0.46\linewidth}
+	\raggedright
+	\textbf{Authors:}\\[2pt]
+	\DocAuthor
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.22\linewidth}
+	\centering
+	\textbf{Revision:}\\[2pt]
+	\DocRevision
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.30\linewidth}
+	\raggedleft
+	\textbf{Date:}\\[2pt]
+	\DocDate
+\end{minipage}
+
+\vspace{10pt}
+\noindent\rule{\linewidth}{0.8pt}
+
+% ---- Abstract ----
+\vspace{24pt plus 4pt minus 12pt}
+
+\begin{center}
+	\begin{minipage}{0.88\linewidth}
+		\footnotesize
+		\begin{onehalfspace}
+			\textbf{Abstract:} \DocAbstract
+		\end{onehalfspace}
+	\end{minipage}
+\end{center}
+
+\vfill
+
+% ---- Revision history ----
+\begin{center}
+	\begin{minipage}{0.96\linewidth}
+		\centering
+		{\footnotesize\scshape Revision history}\\[6pt]
+		{\footnotesize
+			\begin{tabular}{@{}cl>{\raggedright\arraybackslash}p{0.36\linewidth}>{\raggedright\arraybackslash}p{0.28\linewidth}@{}}
+				\toprule
+				\textbf{Rev.} & \textbf{Date} & \textbf{Description} & \textbf{Authors} \\
+				\midrule
+				\RevisionHistory
+				\bottomrule
+			\end{tabular}}
+	\end{minipage}
+\end{center}
+
+\vspace{18pt plus 4pt minus 10pt}
+
+% ---- Metadati in fondo ----
+\noindent
+\begin{tabular}{@{} r @{\quad} l @{}}
+	\textsc{\MetaLabelA:} & {\href{\MetaValueAUrl}{\MetaValueALabel}} \\[3pt]
+	\textsc{\MetaLabelB:} & {\MetaValueB}       \\[3pt]
+\end{tabular}
+
+% =============================================================
+%  Fine frontespizio
+% =============================================================
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}

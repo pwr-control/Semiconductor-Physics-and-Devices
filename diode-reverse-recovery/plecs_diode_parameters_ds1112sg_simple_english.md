@@ -135,7 +135,7 @@ Two practical consequences decide which values to write.
 
 $$I_{rrm} = \sqrt{\frac{2\,Q_{rr}\,(\mathrm{d}I_r/\mathrm{d}t)}{1+s}}.$$
 
-> The same triangle, drawn next to the charge-controlled waveform, is [figure 2 of the physics document](figures/fig2_recovery_waveform.svg).
+> The same triangle, drawn next to the charge-controlled waveform, is [figure 3 of the physics document](figures/fig3_recovery_waveform.svg).
 
 ---
 
@@ -261,7 +261,7 @@ The value chosen for the script, `Qrr_ref = 0.45e-3`, is the geometric mean of t
 
 **Figure 2 (described).** Stored charge of the DS1112SG against the slope of the current, on a log-log plot. The datasheet curve at $T_{vj}$ max is a straight line ($\propto a^{0.28}$) through the rated point (3 A/µs) and the last published point (0.7 A/µs). Below 0.7 A/µs two lines go down to the operating point (0.107 A/µs, dotted vertical line): the continuation of the straight line (ceiling) and the linear scaling $a\tau^2$ (floor). At the operating point the figure also marks the geometric mean at 150 °C and the value chosen at 100 °C.
 
-> The same plot, rebuilt from the numbers of this note, is [figure 5 of the physics document](figures/fig5_qs_vs_didt.svg).
+> The same plot, rebuilt from the numbers of this note, is [figure 6 of the physics document](figures/fig6_qs_vs_didt.svg).
 
 ### 5.3 I_rrm and t_rr from the triangle
 
@@ -389,7 +389,7 @@ $$\tau = 77.6 + 15.4 = 93.0\ \text{µs}, \qquad T_M = \frac{93.0 \times 15.4}{77
 
 **Figure 3 (described).** Diode current at turn-off for the nominal Dynex set ($a$ = 0.107 A/µs, $I_{rrm}$ = 8.3 A). The PLECS triangle and the response of the charge-controlled model with $\tau$ = 93 µs, $T_M$ = 18.5 µs have the same ramp, the same peak and the same charge. The common ramp is $-a\,t$; the PLECS tail is linear with $t_b = 2\,t_{tail}$; the Lauritzen–Ma tail is $e^{-t/t_{tail}}$. Both carry $Q_{rr}$ = 450 µC.
 
-> The same figure, computed from these parameters, is [figure 2 of the physics document](figures/fig2_recovery_waveform.svg).
+> The same figure, computed from these parameters, is [figure 3 of the physics document](figures/fig3_recovery_waveform.svg).
 
 The unbalance $Q_{rr}(1-u)$, $I_{rrm}\sqrt{1-u}$ of §5.4 scales both $Q_{rr}/I_{rrm}$ and $I_{rrm}/a$ by the same factor $\sqrt{1-u}$. So $t_a$, $t_{tail}$, $\tau$ and $T_M$ of the weak diode are all $\sqrt{1-u}$ times the nominal ones (× 0.837 for $u$ = 0.3).
 

@@ -7,13 +7,15 @@
 The Markdown files are the master copies. This script converts them with
 pandoc (needs the ``pandoc`` binary, or ``pip install pypandoc_binary``)
 after a few text substitutions that pdflatex needs (unicode symbols, figure
-blocks, links to files of the repository), and wraps the result in a
-self-contained preamble so that each .tex file compiles on its own with
-pdflatex and the packages of a standard TeX Live.
+blocks, table captions, links to files of the repository), and wraps the
+result in the pwr-control LaTeX template of ``../../AAA_template_latex_settings``
+(``settings.tex`` and the title page ``titlepage.tex``), following the usage
+block of that folder's README.
 """
 
 import os
 import re
+import string
 import shutil
 import subprocess
 import sys
@@ -22,45 +24,117 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DOC = os.path.normpath(os.path.join(HERE, ".."))
 REPO_URL = ("https://github.com/pwr-control/Semiconductor-Physics-and-Devices"
             "/blob/main/diode-reverse-recovery/")
+TEMPLATE = "../AAA_template_latex_settings"   # relative to the document folder
+
+# ------------------------------------------------------------ title pages
+# One entry per document: the \Doc... macros that titlepage.tex expects.
+AUTHOR = "Davide Bagnara"
+REVISION = "00"
+DATE = "October 2026"
+META_A = ("Project Repository",
+          "https://github.com/pwr-control/Semiconductor-Physics-and-Devices.git",
+          "Semiconductor-Physics-and-Devices.git")
 
 DOCS = {
     "plecs_diode_parameters_ds1112sg_simple_english": {
-        "title": ("DS1112SG60 diode stack at 13.8\\,kV: how the PLECS and "
-                  "Simscape diode parameters are obtained from the datasheet"),
+        "category": "Technical Note",
+        "field": "Semiconductor Physics and Devices",
+        "title": (r"{\fontsize{20}{24}\selectfont\bfseries "
+                  r"DS1112SG60 diode stack at 13.8\,kV:} \\[16pt]" "\n    "
+                  r"{\fontsize{16}{20}\selectfont\bfseries how the PLECS and "
+                  r"Simscape diode parameters are obtained from the datasheet}"),
         "subtitle": ("Plain-English version of the calculation note "
-                     "``Parametri PLECS e Simscape del DS1112SG60'', Rev.~01, "
-                     "2026-10-01 (Secom Proposal Engineering, D.~Bagnara)"),
+                     "``Parametri PLECS e Simscape del DS1112SG60'' "
+                     "(Rev.~01, 2026-10-01, Secom Proposal Engineering)."),
+        "abstract": (
+            "Two DS1112SG60 fast-recovery diodes in series rectify 13.8\\,kV. "
+            "This note derives, from the Dynex datasheet and from the operating "
+            "point of the circuit (60\\,A, 0.107\\,A/\\textmu s), every parameter "
+            "of the PLECS \\emph{Diode with Reverse Recovery} model: the static "
+            "characteristic, the off resistance, the junction capacitance, the "
+            "recovered charge, the peak reverse current and the recovery time. "
+            "Because the datasheet stops at a current slope thirty times higher "
+            "than the one of the circuit, the stored charge is bracketed by a "
+            "floor and a ceiling extrapolation, and twelve parameter sets cover "
+            "the uncertainty. The same data are then mapped onto the "
+            "charge-controlled diode of Lauritzen and Ma used by the "
+            "MATLAB/Simscape model. Every number, formula and table of the "
+            "Italian note is kept; only the language is simpler."),
+        "history": (
+            "00 & October 2026 & First issue. Plain-English rewrite of the "
+            "Italian note Rev.~01, generated from the Markdown master with "
+            "\\texttt{scripts/build\\_tex.py}. & \\DocAuthor \\\\"),
+        "meta_b": ("Framework", "PLECS 5.0, MATLAB/Simscape"),
     },
     "physics_of_reverse_recovery": {
-        "title": "The physics of diode reverse recovery, in plain English",
-        "subtitle": ("A companion to chapter 5 of the DS1112SG60 note"),
+        "category": "Technical Note",
+        "field": "Semiconductor Physics and Devices",
+        "title": (r"{\fontsize{20}{24}\selectfont\bfseries "
+                  r"The physics of diode reverse recovery,} \\[16pt]" "\n    "
+                  r"{\fontsize{16}{20}\selectfont\bfseries in plain English}"),
+        "subtitle": ("A companion to chapter 5 of the DS1112SG60 "
+                     "PLECS/Simscape parameter note."),
+        "abstract": (
+            "Why does a high-voltage diode keep conducting after its current has "
+            "crossed zero, and where does the recovered charge come from? This "
+            "note explains chapter 5 of the DS1112SG60 parameter note with one "
+            "idea: the charge stored in the diode is a first-order lag of the "
+            "current, with the carrier lifetime as time constant. From this "
+            "follow the charge left at the zero crossing, the peak reverse "
+            "current, the exponential tail, the charge budget, the apparent "
+            "lifetime read from the datasheet, the floor and ceiling "
+            "extrapolations, the PLECS triangle and the unbalance rule of a "
+            "series stack. The derivations are collected in an appendix. All "
+            "figures are computed with the nominal parameter set of the note."),
+        "history": (
+            "00 & October 2026 & First issue. Generated from the Markdown "
+            "master with \\texttt{scripts/build\\_tex.py}. & \\DocAuthor \\\\"),
+        "meta_b": ("Figures", "\\texttt{scripts/make\\_figures.py} "
+                              "(Python, NumPy, Matplotlib)"),
     },
 }
 
-PREAMBLE = r"""\documentclass[a4paper,11pt]{article}
-% ---------------------------------------------------------------- packages
-\usepackage[utf8]{inputenc}
+PREAMBLE = string.Template(r"""\documentclass[11pt,a4paper,numbers=noenddot]{scrartcl}
+\input{${tpl}/settings}
+% The documents of this repository are one folder below the root, not two as
+% settings.tex assumes: point the header logo to the right place.
+\rhead{\includegraphics[height=0.75cm]{${tpl}/pwr-control_logo_doc.png}}
 \usepackage[T1]{fontenc}
-% Computer Modern in T1 encoding (cm-super); add lmodern if you have it
-\usepackage{textcomp}
-\usepackage[margin=2.4cm]{geometry}
-\usepackage{amsmath,amssymb}
-\usepackage{graphicx}
-\usepackage{booktabs,longtable,array,calc}
-\usepackage{microtype}
-\usepackage{xcolor}
-\usepackage[colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black,
-            citecolor=blue!50!black]{hyperref}
 % ------------------------------------------------- pandoc helper macros
 \providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \providecommand{\pandocbounded}[1]{#1}
-\setcounter{secnumdepth}{-\maxdimen} % section numbers are written in the titles
-\setlength{\parskip}{0.45em}
-\setlength{\parindent}{0pt}
 \setlength{\LTpre}{0.8em}
 \setlength{\LTpost}{0.8em}
-\renewcommand{\arraystretch}{1.15}
-"""
+\setlength{\emergencystretch}{3em} % long file names in links: looser lines rather than overfull ones
+
+\newcommand{\DocCategory}{${category}}
+\newcommand{\DocField}{${field}}
+\newcommand{\DocTitle}{%
+    ${title}
+}
+\newcommand{\DocSubtitle}{${subtitle}}
+\newcommand{\DocAuthor}{${author}}
+\newcommand{\DocRevision}{${revision}}
+\newcommand{\DocDate}{${date}}
+\newcommand{\DocAbstract}{${abstract}}
+
+% one line per revision: Rev. & Date & Description & Authors \\
+\newcommand{\RevisionHistory}{%
+    ${history}
+}
+
+\newcommand{\MetaLabelA}{${meta_a_label}}
+\newcommand{\MetaValueAUrl}{${meta_a_url}}
+\newcommand{\MetaValueALabel}{${meta_a_text}}
+\newcommand{\MetaLabelB}{${meta_b_label}}
+\newcommand{\MetaValueB}{${meta_b_text}}
+""")
+
+
+def capitalise(cap):
+    """The Markdown captions start in lower case after the bold label;
+    the LaTeX captions (and the lists of figures and tables) start in upper case."""
+    return cap[0].upper() + cap[1:] if cap[:1].islower() else cap
 
 
 def github_links(s):
@@ -73,19 +147,40 @@ def github_links(s):
 
 
 def figure_blocks(s):
-    """``![alt](figures/x.svg)`` followed by ``*Figure N: caption*`` becomes a
-    LaTeX figure numbered N with the PDF version of the same figure."""
+    """``![alt](figures/x.svg)`` followed by ``**Figure N:** caption`` becomes
+    a LaTeX figure with the PDF version of the same figure. The figures are
+    numbered in order of appearance in the Markdown, so LaTeX gives them the
+    same numbers; ``Figure N`` in the text becomes a reference."""
     pat = re.compile(r"!\[[^\]]*\]\(figures/(\w+)\.svg\)\n\n\*\*Figure (\d+):\*\* (.+?)\n")
+    seen = []
 
     def repl(m):
         name, num, cap = m.group(1), int(m.group(2)), m.group(3).strip()
-        cap = cap.replace("%", "\\%").replace("&", "\\&")   # raw LaTeX: escape
+        seen.append(num)
+        cap = capitalise(cap).replace("%", "\\%").replace("&", "\\&")   # raw LaTeX: escape
+        short = re.split(r"(?<=[a-z])\. ", cap, maxsplit=1)[0]   # first sentence
+        short = "[%s.]" % short if short != cap else ""
         return ("```{=latex}\n\\begin{figure}[htbp]\n\\centering\n"
-                "\\setcounter{figure}{%d}\n"
                 "\\includegraphics[width=\\linewidth]{figures/%s.pdf}\n"
-                "\\caption{%s}\\label{fig:%d}\n\\end{figure}\n```\n"
-                % (num - 1, name, cap, num))
-    return pat.sub(repl, s)
+                "\\caption%s{%s}\\label{fig:%d}\n\\end{figure}\n```\n"
+                % (name, short, cap, num))
+    s = pat.sub(repl, s)
+    if seen:
+        assert seen == list(range(1, len(seen) + 1)), \
+            "figures must be numbered in order of appearance: %s" % seen
+        s = re.sub(r"\bFigures (\d) and (\d)\b",
+                   r"Figures \\ref{fig:\1} and \\ref{fig:\2}", s)
+        s = re.sub(r"\bFigure (\d)\b", r"Figure \\ref{fig:\1}", s)
+    return s, bool(seen)
+
+
+def table_captions(s):
+    """``**Table N: caption**`` above a pipe table becomes a pandoc table
+    caption, so LaTeX numbers the table and lists it."""
+    pat = re.compile(r"^\*\*Table (\d+): (.+?)\*\*\n\n(?=\|)", flags=re.M)
+    n = len(pat.findall(s))
+    s = pat.sub(lambda m: "Table: %s\n\n" % capitalise(m.group(2).strip()), s)
+    return s, n > 0
 
 
 SUP = {"⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5",
@@ -148,12 +243,28 @@ HEADING_MATH = [
 ]
 
 
-def heading_math(md):
-    """The Markdown headings spell symbols in plain text (GitHub anchors);
-    the LaTeX headings get proper math."""
+def headings(md):
+    """The Markdown headings carry their numbers and spell symbols in plain
+    text (GitHub anchors). In LaTeX the sections are numbered by the class,
+    the headings without a number stay unnumbered, the appendices follow
+    \\appendix, and the symbols become math."""
     out = []
+    in_appendix = False
     for line in md.split("\n"):
         if line.startswith("#"):
+            m = re.match(r"^(#{2,3}) \d+(?:\.\d+)* (.*)$", line)
+            if m:
+                line = "%s %s" % (m.group(1), m.group(2))
+            else:
+                m = re.match(r"^## Appendix [A-Z]: (.*)$", line)
+                if m:
+                    title = m.group(1)
+                    line = "## " + title[0].upper() + title[1:]
+                    if not in_appendix:
+                        line = "```{=latex}\n\\appendix\n```\n\n" + line
+                        in_appendix = True
+                elif line.startswith("## "):
+                    line += " {-}"
             for a, b in HEADING_MATH:
                 line = line.replace(a, b)
         out.append(line)
@@ -161,12 +272,15 @@ def heading_math(md):
 
 
 def preprocess(md):
-    # title line and the Contents section are replaced by \maketitle and \tableofcontents
+    # the title, the subtitle line of the rewrite and the Contents section
+    # are replaced by the title page and \tableofcontents
     md = re.sub(r"\A# .*?\n", "", md)
-    md = heading_math(md)
+    md = re.sub(r"\n\*\*Plain-English version of the calculation note.*?\*\*\n", "\n", md)
     md = re.sub(r"\n## Contents\n.*?(?=\n## |\n---\n)", "\n", md, flags=re.S)
     md = re.sub(r"\n---\n", "\n", md)
-    md = figure_blocks(md)      # before the links, which would rewrite the image paths
+    md = headings(md)
+    md, has_figures = figure_blocks(md)   # before the links, which would rewrite the image paths
+    md, has_tables = table_captions(md)
     md = github_links(md)
     # one inline code span holds an Omega; make it text so it can be typeset
     md = md.replace("`roff_s = roff = 2.9 MΩ`", "`roff_s = roff` = 2.9 MΩ")
@@ -177,74 +291,76 @@ def preprocess(md):
         elif kind == "math":
             t = fix_math(t)
         out.append(t)
-    return "".join(out)
+    return "".join(out), has_figures, has_tables
+
+
+# tables whose text cells are long get explicit column widths (fractions of
+# \linewidth), recognised by their header row
+WIDTHS = [
+    ("Rev. & Date & Author & Description", [0.06, 0.13, 0.14, 0.58]),
+    ("Symbol & Meaning", [0.27, 0.68]),
+    ("Parameter & Value & Origin & Type", [0.13, 0.15, 0.45, 0.18]),
+    ("What it is & In the physics", [0.2, 0.25, 0.25, 0.22]),
+    ("File & What it is", [0.3, 0.65]),
+]
 
 
 def postprocess(tex):
-    # the two wide tables with long text cells get explicit column widths
-    tex = tex.replace(
-        r"\begin{longtable}[]{@{}llll@{}}" + "\n" + r"\toprule\noalign{}" + "\n"
-        r"Rev. & Date & Author & Description \\",
-        r"\begin{longtable}[]{@{}>{\raggedright\arraybackslash}p{0.06\linewidth}"
-        r">{\raggedright\arraybackslash}p{0.13\linewidth}"
-        r">{\raggedright\arraybackslash}p{0.14\linewidth}"
-        r">{\raggedright\arraybackslash}p{0.58\linewidth}@{}}" + "\n"
-        + r"\toprule\noalign{}" + "\n" + r"Rev. & Date & Author & Description \\")
-    tex = tex.replace(
-        r"\begin{longtable}[]{@{}ll@{}}" + "\n" + r"\toprule\noalign{}" + "\n"
-        r"Symbol & Meaning \\",
-        r"\begin{longtable}[]{@{}>{\raggedright\arraybackslash}p{0.27\linewidth}"
-        r">{\raggedright\arraybackslash}p{0.68\linewidth}@{}}" + "\n"
-        + r"\toprule\noalign{}" + "\n" + r"Symbol & Meaning \\")
-    tex = tex.replace(
-        r"\begin{longtable}[]{@{}llll@{}}" + "\n" + r"\toprule\noalign{}" + "\n"
-        r"Parameter & Value & Origin & Type \\",
-        r"\begin{longtable}[]{@{}>{\raggedright\arraybackslash}p{0.13\linewidth}"
-        r">{\raggedright\arraybackslash}p{0.15\linewidth}"
-        r">{\raggedright\arraybackslash}p{0.45\linewidth}"
-        r">{\raggedright\arraybackslash}p{0.18\linewidth}@{}}" + "\n"
-        + r"\toprule\noalign{}" + "\n" + r"Parameter & Value & Origin & Type \\")
-    tex = tex.replace(
-        r"\begin{longtable}[]{@{}llll@{}}" + "\n" + r"\toprule\noalign{}" + "\n"
-        r"What it is & In the physics",
-        r"\begin{longtable}[]{@{}>{\raggedright\arraybackslash}p{0.2\linewidth}"
-        r">{\raggedright\arraybackslash}p{0.25\linewidth}"
-        r">{\raggedright\arraybackslash}p{0.25\linewidth}"
-        r">{\raggedright\arraybackslash}p{0.22\linewidth}@{}}" + "\n"
-        + r"\toprule\noalign{}" + "\n" + r"What it is & In the physics")
-    tex = tex.replace(
-        r"\begin{longtable}[]{@{}ll@{}}" + "\n" + r"\toprule\noalign{}" + "\n"
-        r"File & What it is \\",
-        r"\begin{longtable}[]{@{}>{\raggedright\arraybackslash}p{0.3\linewidth}"
-        r">{\raggedright\arraybackslash}p{0.65\linewidth}@{}}" + "\n"
-        + r"\toprule\noalign{}" + "\n" + r"File & What it is \\")
-    # all tables in a smaller font
-    tex = tex.replace(r"\begin{longtable}", r"{\small" + "\n" + r"\begin{longtable}")
+    # pandoc wraps uncaptioned tables in a group that the caption package
+    # (loaded by settings.tex) cannot digest; longtable steps the table
+    # counter at every table, so step it back after an uncaptioned one
+    tex = re.sub(r"\{\\def\\LTcaptype\{none\}[^\n]*\n(.*?\\end\{longtable\}\n)\}",
+                 r"\1\\addtocounter{table}{-1}% uncaptioned table: not counted",
+                 tex, flags=re.S)
+    # unnumbered sections do not set the running header by themselves
+    tex = re.sub(r"(\\section\*\{(.+?)\}\\label\{[^}]*\}\n\\addcontentsline\{toc\}\{section\}\{.+?\}\n)",
+                 r"\1\\markboth{\2}{}\n", tex)
+    # long file names in monospace may break after a slash or an underscore
+    tex = re.sub(r"\\texttt\{([^{}]{25,})\}",
+                 lambda m: "\\texttt{%s}" % m.group(1).replace("/", "/\\allowbreak{}")
+                                                     .replace("\\_", "\\_\\allowbreak{}"), tex)
+
+    def widths(m):
+        spec, rest = m.group(1), m.group(2)
+        for header, ws in WIDTHS:
+            if header in rest:
+                spec = "@{}" + "".join(r">{\raggedright\arraybackslash}p{%g\linewidth}" % w
+                                       for w in ws) + "@{}"
+                break
+        return "\\begin{longtable}[]{%s}\n%s" % (spec, rest)
+    tex = re.sub(r"\\begin\{longtable\}\[\]\{(@\{\}.*?@\{\})\}\n((?:[^\n]*\n){1,3})",
+                 widths, tex)
+    # all tables in a smaller font, single spaced
+    tex = tex.replace(r"\begin{longtable}", "{\\small\\singlespacing\n" + r"\begin{longtable}")
     tex = tex.replace(r"\end{longtable}", r"\end{longtable}" + "\n}")
-    # code listings a bit smaller
-    tex = tex.replace(r"\begin{verbatim}", r"{\small\begin{verbatim}")
+    # the remarks of the note go in the grey box of the template
+    tex = tex.replace(r"\begin{quote}", r"\begin{mybox}")
+    tex = tex.replace(r"\end{quote}", r"\end{mybox}")
+    # code listings smaller and single spaced
+    tex = tex.replace(r"\begin{verbatim}", "{\\small\\singlespacing" + r"\begin{verbatim}")
     tex = tex.replace(r"\end{verbatim}", r"\end{verbatim}}")
     return tex
 
 
 def build(name, meta, pdf=False):
     src = os.path.join(DOC, name + ".md")
-    md = preprocess(open(src, encoding="utf-8").read())
+    md, has_figures, has_tables = preprocess(open(src, encoding="utf-8").read())
     body = subprocess.run(
         ["pandoc", "-f", "markdown+tex_math_dollars+pipe_tables+raw_tex",
          "-t", "latex", "--no-highlight", "--wrap=preserve",
          "--shift-heading-level-by=-1", "--columns=1000"],
         input=md, capture_output=True, text=True, check=True).stdout
     body = postprocess(body)
-    tex = (PREAMBLE
-           + "\\title{%s\\\\[0.6em]{\\large %s}}\n" % (meta["title"], meta["subtitle"])
-           + "\\author{}\n\\date{Rev.~00, 2026-10-04}\n"
-           + "\\begin{document}\n\\maketitle\n"
-           + "\\noindent\\emph{Generated by \\texttt{scripts/build\\_tex.py} from the "
-             "Markdown file \\texttt{%s.md}, which is the master copy.}\n\n"
-             % name.replace("_", "\\_")
-           + "\\tableofcontents\n\\bigskip\n\n"
-           + body + "\n\\end{document}\n")
+    fields = dict(tpl=TEMPLATE, author=AUTHOR, revision=REVISION, date=DATE,
+                  meta_a_label=META_A[0], meta_a_url=META_A[1], meta_a_text=META_A[2],
+                  meta_b_label=meta["meta_b"][0], meta_b_text=meta["meta_b"][1],
+                  **{k: v for k, v in meta.items() if k != "meta_b"})
+    tex = (PREAMBLE.substitute(fields)
+           + "\n\\begin{document}\n\\input{%s/titlepage}\n\\tableofcontents\n" % TEMPLATE
+           + ("\\listoffigures\n" if has_figures else "")
+           + ("\\listoftables\n" if has_tables else "")
+           + "\\newpage\n\\begin{onehalfspace}\n\n"
+           + body + "\n\\end{onehalfspace}\n\\end{document}\n")
     dst = os.path.join(DOC, name + ".tex")
     open(dst, "w", encoding="utf-8").write(tex)
     print("wrote", os.path.relpath(dst))
@@ -256,7 +372,7 @@ def build(name, meta, pdf=False):
             if r.returncode != 0:
                 print(r.stdout[-3000:])
                 sys.exit("pdflatex failed on " + name)
-        for ext in (".aux", ".log", ".out", ".toc"):
+        for ext in (".aux", ".log", ".out", ".toc", ".lof", ".lot"):
             try:
                 os.remove(os.path.join(DOC, name + ext))
             except FileNotFoundError:
