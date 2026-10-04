@@ -14,7 +14,8 @@ PLECS script.  Run from anywhere:
 
     python3 make_figures.py
 
-Figures are written as SVG next to the script, in ../figures/.
+Figures are written as SVG (for the Markdown documents) and PDF (for
+the LaTeX documents) next to the script, in ../figures/.
 """
 
 import os
@@ -47,7 +48,9 @@ PREVIEW = os.environ.get("PREVIEW_DIR")   # optional PNG copies for checking
 
 
 def save(fig, name):
+    """SVG for the Markdown documents, PDF for the LaTeX documents."""
     fig.savefig(os.path.join(OUT, name + ".svg"))
+    fig.savefig(os.path.join(OUT, name + ".pdf"))
     if PREVIEW:
         os.makedirs(PREVIEW, exist_ok=True)
         fig.savefig(os.path.join(PREVIEW, name + ".png"), dpi=110)

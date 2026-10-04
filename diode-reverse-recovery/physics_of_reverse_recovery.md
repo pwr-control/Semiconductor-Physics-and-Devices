@@ -15,7 +15,7 @@ All figures are computed with the nominal Dynex set of the note ($a$ = 0.107 A/�
 5. [The zero crossing: why the diode does not stop](#5-the-zero-crossing-why-the-diode-does-not-stop)
 6. [The peak: the junction runs dry](#6-the-peak-the-junction-runs-dry)
 7. [The tail](#7-the-tail)
-8. [Where the charge goes: $Q_{rr}$ is less than the charge inside](#8-where-the-charge-goes-q_rr-is-less-than-the-charge-inside)
+8. [Where the charge goes: Q_rr is less than the charge inside](#8-where-the-charge-goes-q_rr-is-less-than-the-charge-inside)
 9. [The apparent lifetime, the floor and the ceiling (§5.2 decoded)](#9-the-apparent-lifetime-the-floor-and-the-ceiling-52-decoded)
 10. [Temperature](#10-temperature)
 11. [The triangle and the PLECS constraint (§5.3 decoded)](#11-the-triangle-and-the-plecs-constraint-53-decoded)
@@ -64,7 +64,7 @@ The total amount of this cloud is the **stored charge** $q$. (Count the holes; t
 
 ![sketch of the plasma profiles](figures/fig7_plasma_profiles_sketch.svg)
 
-*Figure 7: sketch of the carrier density across the base at four moments of the turn-off. The shapes are illustrative. The important feature is that the cloud is removed from the edges inward, so the junctions run dry while there is still charge in the middle.*
+**Figure 7:** sketch of the carrier density across the base at four moments of the turn-off. The shapes are illustrative. The important feature is that the cloud is removed from the edges inward, so the junctions run dry while there is still charge in the middle.
 
 ---
 
@@ -92,7 +92,7 @@ After a few lifetimes the exponential is gone and $q(t) \approx \tau\,(i(t) + a\
 
 ![the stored charge lags the current](figures/fig1_charge_lags_current.svg)
 
-*Figure 1: the diode current (blue) and the stored charge divided by the lifetime (red), on the same scale, during the 560 µs ramp of our rectifier. The red curve runs behind the blue one by one lifetime. When the current reaches zero, the charge is not zero: it is what the current was one lifetime ago, times $\tau$.*
+**Figure 1:** the diode current (blue) and the stored charge divided by the lifetime (red), on the same scale, during the 560 µs ramp of our rectifier. The red curve runs behind the blue one by one lifetime. When the current reaches zero, the charge is not zero: it is what the current was one lifetime ago, times $\tau$.
 
 **At the zero crossing of the current, $i = 0$, the charge is**
 
@@ -120,7 +120,7 @@ This is the part of the waveform that chapter 5 calls $t_a$. The diode has no sa
 
 ![the full recovery waveform](figures/fig2_recovery_waveform.svg)
 
-*Figure 2: the recovery current at our operating point. Phase 1 is the ramp, forced by the circuit. Phase 2 is the peak, the moment the junction empties. Phase 3 is the tail. The dashed green line is the triangle PLECS uses in place of the real shape, with the same peak and the same area.*
+**Figure 2:** the recovery current at our operating point. Phase 1 is the ramp, forced by the circuit. Phase 2 is the peak, the moment the junction empties. Phase 3 is the tail. The dashed green line is the triangle PLECS uses in place of the real shape, with the same peak and the same area.
 
 ---
 
@@ -167,11 +167,11 @@ It recombined while it was being pulled out. Pulling the charge out takes about 
 
 ![charge budget](figures/fig3_charge_budget.svg)
 
-*Figure 3: of the 923 µC stored at the zero crossing, 321 µC come out before the peak, 128 µC come out in the tail, and 474 µC recombine inside the diode and are never seen at the terminals.*
+**Figure 3:** of the 923 µC stored at the zero crossing, 321 µC come out before the peak, 128 µC come out in the tail, and 474 µC recombine inside the diode and are never seen at the terminals.
 
 In the simplest version of the model, with $T_M = 0$, the result is exact and tidy: **exactly half** of the charge at the zero crossing comes out as reverse current, and half recombines (Appendix A4). With the transit time included, the fraction is a little different but the picture is the same.
 
-This has a practical consequence for how you read §5.2 of the note. The note writes $Q_{rr} \approx a\tau^2$ and then backs out $\tau = \sqrt{Q_S/a}$ from the datasheet. Strictly, $a\tau^2$ is the charge *inside*, and $Q_{rr}$ is about half of it. The $\tau$ that comes out of $\sqrt{Q_S/a}$ is therefore not the physical lifetime but a bookkeeping lifetime, about 0.7 times the real one. The note calls it the **apparent lifetime**, and that is the right name. The scaling laws of chapter 5 ($Q_{rr} \propto a$, $I_{rrm} \propto a$, $Q_{rr} \propto \tau^2$, $I_{rrm} \propto \tau$) are unaffected, because the factor of one half is the same everywhere. Only the number you call "$\tau$" differs. The Lauritzen–Ma fit of section 7 of the note, which does the bookkeeping properly, gives the physical value: 93 µs at 100 °C for the chosen set, against an apparent $\sqrt{450\ \text{µC}/0.107\ \text{A/µs}}$ = 65 µs.
+This has a practical consequence for how you read §5.2 of the note. The note writes $Q_{rr} \approx a\tau^2$ and then backs out $\tau = \sqrt{Q_S/a}$ from the datasheet. Strictly, $a\tau^2$ is the charge *inside*, and $Q_{rr}$ is about half of it. The $\tau$ that comes out of $\sqrt{Q_S/a}$ is therefore not the physical lifetime but a bookkeeping lifetime, about 0.7 times the real one. The note calls it the **apparent lifetime**, and that is the right name. The scaling laws of chapter 5 ($Q_{rr} \propto a$, $I_{rrm} \propto a$, $Q_{rr} \propto \tau^2$, $I_{rrm} \propto \tau$) are unaffected, because the factor of one half is the same everywhere. Only the number you call $\tau$ differs. The Lauritzen–Ma fit of section 7 of the note, which does the bookkeeping properly, gives the physical value: 93 µs at 100 °C for the chosen set, against an apparent $\sqrt{450\ \text{µC}/0.107\ \text{A/µs}}$ = 65 µs.
 
 ---
 
@@ -191,16 +191,16 @@ All three fade as the ramp gets slower. So as $\mathrm{d}i/\mathrm{d}t$ decrease
 
 ![apparent lifetime](figures/fig6_apparent_lifetime.svg)
 
-*Figure 6: the lifetime you would deduce from the datasheet line at each slope. It cannot grow forever; it must level off at the real lifetime of the silicon. Where it levels off is what nobody knows without a measurement at 0.1 A/µs.*
+**Figure 6:** the lifetime you would deduce from the datasheet line at each slope. It cannot grow forever; it must level off at the real lifetime of the silicon. Where it levels off is what nobody knows without a measurement at 0.1 A/µs.
 
 **The two extrapolations are the two extreme answers to "where does it level off".**
 
 - **Floor:** it has already levelled off at the last published point. Keep $\tau$ fixed at 55 µs (apparent) and let $Q_S$ fall in proportion to $a$: 2100 µC × 0.107/0.7 = 320 µC. This is the slope-1 line in Figure 5.
-- **Ceiling:** it has not levelled off at all. Continue the datasheet's power law: 3000 µC × (0.107/3)⁰·²⁸ = 1180 µC, which corresponds to an apparent $\tau$ of 105 µs.
+- **Ceiling:** it has not levelled off at all. Continue the datasheet's power law: 3000 µC × $(0.107/3)^{0.28}$ = 1180 µC, which corresponds to an apparent $\tau$ of 105 µs.
 
 ![Qs versus di/dt](figures/fig5_qs_vs_didt.svg)
 
-*Figure 5: the datasheet line, the two extrapolations below the last published point, and the value chosen in the note. The vertical gap between floor and ceiling is a factor of 3.7 in charge, which is a factor of 1.9 in lifetime.*
+**Figure 5:** the datasheet line, the two extrapolations below the last published point, and the value chosen in the note. The vertical gap between floor and ceiling is a factor of 3.7 in charge, which is a factor of 1.9 in lifetime.
 
 In the language of the Lauritzen–Ma model, where $\tau$ is the physical lifetime, the floor corresponds to $\tau$ ≈ 78 µs and the ceiling to $\tau$ ≈ 152 µs (Table 4 of the note, "floor" and "worst" rows). Both are believable for a 6 kV rectifier wafer. **That is the honest state of knowledge: the lifetime is known to within a factor of two.** The note picks the geometric mean (615 µC at 150 °C), which is the middle of the interval on a log scale, and says plainly that only a measurement from Dynex can do better (§8 of the note).
 
@@ -253,7 +253,7 @@ Section 2 of the note warns that the PLECS model "scales with the real $\mathrm{
 
 ![the same diode at three slopes](figures/fig4_effect_of_didt.svg)
 
-*Figure 4: the same diode (same $\tau$ and $T_M$) turned off at three slopes. The peak comes at the same time in all three cases, about 78 µs after the zero crossing. Only its height, and the area, scale with the slope.*
+**Figure 4:** the same diode (same $\tau$ and $T_M$) turned off at three slopes. The peak comes at the same time in all three cases, about 78 µs after the zero crossing. Only its height, and the area, scale with the slope.
 
 This is why a diode that is a problem at 3 A/µs (90 A peak, 3 mC) is a mild one at 0.107 A/µs (8 A, 0.45 mC), and why PLECS is right to make its current source proportional to $\mathrm{d}i/\mathrm{d}t$. But PLECS applies that proportionality *around the reference point you give it*, and the real curve is only linear in the long-ramp regime. Give it datasheet values measured in the short-ramp regime, and it will extrapolate a straight line through a point that is not on the straight part. That is the mistake the note warns about, and the reason `di_dt_ref` and `If0_ref` must be the circuit's own numbers: then the scaling ratio is one and no extrapolation happens inside the simulator.
 
@@ -271,7 +271,7 @@ With $C_{sn}$ = 100 nF, every 100 µC of mismatch is about **one kilovolt** on t
 
 ![nominal versus weak diode](figures/fig8_unbalance.svg)
 
-*Figure 8: the recovery current of a nominal diode and of a diode with 30 % less charge, both computed from the model. The weak diode peaks earlier and lower. The shaded area, 135 µC, is the charge that in a series stack ends up in the snubber capacitor of the weak diode.*
+**Figure 8:** the recovery current of a nominal diode and of a diode with 30 % less charge, both computed from the model. The weak diode peaks earlier and lower. The shaded area, 135 µC, is the charge that in a series stack ends up in the snubber capacitor of the weak diode.
 
 **Why the $\sqrt{1-u}$ rule.** In the long-ramp regime both the charge and the peak come from the same lifetime: $Q_{rr} \propto a\tau^2$ and $I_{rrm} \propto a\tau$. So $I_{rrm} \propto \sqrt{Q_{rr}}$. A diode with 30 % less charge has a lifetime $\sqrt{0.7}$ = 0.84 times shorter, and so a peak 0.84 times lower, a $t_a$ 0.84 times shorter, and a $t_{rr}$ 0.84 times shorter. That is the script of §5.4:
 
@@ -299,7 +299,7 @@ Reducing only $t_{rr}$ while keeping $I_{rrm}$ would describe a diode that reach
 | tail | exponential, $t_{tail} = \tau T_M/(\tau + T_M)$ | straight line, $t_b = 2\,t_{tail}$ | exponential |
 | softness | $2\,t_{tail}/t_a$ | $s = t_b/t_a$ | implied |
 | mismatch between diodes | shorter $\tau$ on one diode | `Irrm`, `trr` × $\sqrt{1-u}$ | `tau`, `TM` × $\sqrt{1-u}$ |
-| forward drop | junction + base resistance | `Vf0` + `rt`·$i$ | `Is`, `N`, `Rs` fitted at $I_{F0}$ |
+| forward drop | junction + base resistance | `Vf0` + `rt` × $i$ | `Is`, `N`, `Rs` fitted at $I_{F0}$ |
 | leakage | reverse current of the junction | `roff` | `Rr` |
 
 The conversion between the second and third columns is what section 7 of the note does, with the closed-form inversion (7.5): $t_a = I_{rrm}/a$, $t_{tail} = Q_{rr}/I_{rrm} - t_a/2$, $\tau = t_a + t_{tail}$, $T_M = \tau\,t_{tail}/t_a$.

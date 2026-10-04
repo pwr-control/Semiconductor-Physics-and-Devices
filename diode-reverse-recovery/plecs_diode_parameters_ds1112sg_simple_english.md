@@ -135,7 +135,7 @@ Two practical consequences decide which values to write.
 
 $$I_{rrm} = \sqrt{\frac{2\,Q_{rr}\,(\mathrm{d}I_r/\mathrm{d}t)}{1+s}}.$$
 
-*(The same triangle, drawn next to the charge-controlled waveform, is [figure 2 of the physics document](figures/fig2_recovery_waveform.svg).)*
+> The same triangle, drawn next to the charge-controlled waveform, is [figure 2 of the physics document](figures/fig2_recovery_waveform.svg).
 
 ---
 
@@ -228,7 +228,7 @@ Fig. 4 of the datasheet extends $Q_S$ as a function of the slope, from about 0.7
 
 $$Q_S \propto \left(\frac{\mathrm{d}i}{\mathrm{d}t}\right)^{0.28}, \qquad \frac{\log(6500/3000)}{\log(50/3)} \approx 0.28. \tag{5.1}$$
 
-*(In other words: the charge grows with the slope, but much more slowly than in proportion. Ten times the slope gives only about twice the charge.)*
+> In other words: the charge grows with the slope, but much more slowly than in proportion. Ten times the slope gives only about twice the charge.
 
 There is no curve of $I_{rr}$. It is rebuilt from the triangle (§5.3). At the rated point: $t_a = 90/3 = 30$ µs, $t_{rr} = 2 \times 3000/90 = 67$ µs, so $t_b$ = 37 µs and softness $s = t_b/t_a = 1.2$.
 
@@ -246,7 +246,7 @@ $$q(t_0) \approx a\,\tau^2, \tag{5.2}$$
 
 which does not depend on $I_F$ and is linear in the slope $a$.
 
-*(In other words: the charge inside the diode cannot follow the current instantly. It lags behind by one lifetime. When the current reaches zero, the charge is still what the current had one lifetime earlier, $a\tau$, multiplied by $\tau$. The physics document explains this step in detail.)*
+> In other words: the charge inside the diode cannot follow the current instantly. It lags behind by one lifetime. When the current reaches zero, the charge is still what the current had one lifetime earlier, $a\tau$, multiplied by $\tau$. The physics document explains this step in detail.
 
 From the rated point one gets an *apparent* lifetime $\tau = \sqrt{Q_S/a} = \sqrt{3 \times 10^{-3} / 3 \times 10^{6}} = 32$ µs at 3 A/µs, and 55 µs at 0.7 A/µs. The apparent lifetime grows as the slope decreases. The reason: at high $\mathrm{d}i/\mathrm{d}t$ a part of the charge recombines during the recovery and is never measured at the terminals. When the ramp becomes long, the apparent lifetime saturates towards the true lifetime of the wafer (50–100 µs for a 6 kV diode of this size).
 
@@ -261,7 +261,7 @@ The value chosen for the script, `Qrr_ref = 0.45e-3`, is the geometric mean of t
 
 **Figure 2 (described).** Stored charge of the DS1112SG against the slope of the current, on a log-log plot. The datasheet curve at $T_{vj}$ max is a straight line ($\propto a^{0.28}$) through the rated point (3 A/µs) and the last published point (0.7 A/µs). Below 0.7 A/µs two lines go down to the operating point (0.107 A/µs, dotted vertical line): the continuation of the straight line (ceiling) and the linear scaling $a\tau^2$ (floor). At the operating point the figure also marks the geometric mean at 150 °C and the value chosen at 100 °C.
 
-*(The same plot, rebuilt from the numbers of this note, is [figure 5 of the physics document](figures/fig5_qs_vs_didt.svg).)*
+> The same plot, rebuilt from the numbers of this note, is [figure 5 of the physics document](figures/fig5_qs_vs_didt.svg).
 
 ### 5.3 I_rrm and t_rr from the triangle
 
@@ -300,7 +300,7 @@ trr  = Trr_ref*sqrt(1-Max_Qrr_unbalance)
 Qrr  = Qrr_ref*(1-Max_Qrr_unbalance)       % = 0.5*Irrm*trr (ignored by PLECS)
 ```
 
-*(In other words: $Q_{rr} = a\tau^2$ and $I_{rrm} = a\tau$ both come from the same $\tau$. If the charge is 30 % smaller, $\tau$ is $\sqrt{0.7}$ = 0.84 times smaller, and so are the peak current and the recovery time.)*
+> In other words: $Q_{rr} = a\tau^2$ and $I_{rrm} = a\tau$ both come from the same $\tau$. If the charge is 30 % smaller, $\tau$ is $\sqrt{0.7}$ = 0.84 times smaller, and so are the peak current and the recovery time.
 
 Reducing only $t_{rr}$ while keeping $I_{rrm}$ violates the constraint (5.3): $t_a$ stays at 78 µs while $t_{rr}$ drops to 55 µs for $u$ = 0.5.
 
@@ -389,7 +389,7 @@ $$\tau = 77.6 + 15.4 = 93.0\ \text{µs}, \qquad T_M = \frac{93.0 \times 15.4}{77
 
 **Figure 3 (described).** Diode current at turn-off for the nominal Dynex set ($a$ = 0.107 A/µs, $I_{rrm}$ = 8.3 A). The PLECS triangle and the response of the charge-controlled model with $\tau$ = 93 µs, $T_M$ = 18.5 µs have the same ramp, the same peak and the same charge. The common ramp is $-a\,t$; the PLECS tail is linear with $t_b = 2\,t_{tail}$; the Lauritzen–Ma tail is $e^{-t/t_{tail}}$. Both carry $Q_{rr}$ = 450 µC.
 
-*(The same figure, computed from these parameters, is [figure 2 of the physics document](figures/fig2_recovery_waveform.svg).)*
+> The same figure, computed from these parameters, is [figure 2 of the physics document](figures/fig2_recovery_waveform.svg).
 
 The unbalance $Q_{rr}(1-u)$, $I_{rrm}\sqrt{1-u}$ of §5.4 scales both $Q_{rr}/I_{rrm}$ and $I_{rrm}/a$ by the same factor $\sqrt{1-u}$. So $t_a$, $t_{tail}$, $\tau$ and $T_M$ of the weak diode are all $\sqrt{1-u}$ times the nominal ones (× 0.837 for $u$ = 0.3).
 
@@ -405,7 +405,7 @@ $$R_s = r_t - \frac{N V_t}{I_{F0}}, \qquad v_j(I_{F0}) = V_{f0} + N V_t, \qquad 
 
 The slope of the exponential at $I_{F0}$, $N V_t/I_{F0}$ (0.54 mΩ), takes up more than half of $r_t$. So $R_s$ is small (0.394 mΩ for Dynex, 0.334 mΩ for Infineon), and $N$ cannot exceed $r_t I_{F0}/V_t \approx 1.7$ without making $R_s$ negative.
 
-$I_s$ depends on the recovery set only through $(\tau + T_M)/\tau$, which is the same for $D_n$ and $D_u$: $1.85 \times 10^{-11}$ A for Dynex ($1.88 \times 10^{-11}$ A in the worst case), $1.15 \times 10^{-10}$–$1.38 \times 10^{-10}$ A for Infineon.
+$I_s$ depends on the recovery set only through $(\tau + T_M)/\tau$, which is the same for $D_n$ and $D_u$: $1.85 \times 10^{-11}$ A for Dynex ($1.88 \times 10^{-11}$ A in the worst case), $1.15 \times 10^{-10}$ to $1.38 \times 10^{-10}$ A for Infineon.
 
 Far from $I_{F0}$ the exponential curve moves away from the straight line. But the losses in the diodes do not enter the sizing of the resistors.
 
@@ -497,7 +497,7 @@ info.Vt = Vt; info.Trr_n = 2*Dn.Qrr/Dn.Irrm; info.Trr_u = 2*Du.Qrr/Du.Irrm;
 end
 ```
 
-*(The comments inside the listing were translated into English; the code is unchanged.)*
+> The comments inside the listing were translated into English; the code is unchanged.
 
 ---
 
