@@ -82,7 +82,7 @@ $$\frac{Q(s)}{I(s)} = \frac{\tau}{1 + s\tau}.$$
 
 One pole at $-1/\tau$, DC gain $\tau$. The current is the input, the stored charge is the state. If you prefer a picture: a water tank with an inflow $i$, a water level $q$, and a drain at the bottom that leaks at the rate $q/\tau$. Open the tap and the level rises exponentially to $\tau\, i$. Close it and the level falls exponentially with time constant $\tau$.
 
-**What a first-order lag does with a ramp.** This is the one piece of control theory that chapter 5 rests on. Feed a ramp into a first-order lag and, once the transient has died, the output follows the input *with a constant delay of $\tau$ seconds*. Equivalently, the output is always behind the input by (slope × $\tau$).
+**What a first-order lag does with a ramp.** This is the one piece of control theory that chapter 5 rests on. Feed a ramp into a first-order lag and, once the transient has died, the output follows the input **with a constant delay of $\tau$ seconds**. Equivalently, the output is always behind the input by (slope × $\tau$).
 
 Apply this to turn-off. The circuit forces the current down with slope $a$: $i(t) = I_{F0} - a\,t$. The exact solution of the charge equation (Appendix A1) is
 
